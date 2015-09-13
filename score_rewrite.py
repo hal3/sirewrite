@@ -66,7 +66,7 @@ en3 = AlignedSentence('a tasty sandwich was eaten by me', '1-3 2-4 3-8 5-2 7-1',
 
 
 
-def pseudoDecalage(aln): # returns both total decalage and total speaking time for E
+def pseudoDecalage(aln, srcLang='ja', tgtLang='en-US'): # returns both total decalage and total speaking time for E
     #
     # the decalage (ear-voice span) for some english word e is the
     # difference in time between the START time of that english word
@@ -108,12 +108,12 @@ def pseudoDecalage(aln): # returns both total decalage and total speaking time f
     #     previous word (equivalent to aligning to J[0])
     ja = aln.src
     en = aln.w
-    t  = [sayit('ja', ja[:i]) for i in range(len(ja)+1)]
+    t  = [sayit(srcLang, ja[:i]) for i in range(len(ja)+1)]
     A  = [ 0 if len(aset)==0 else max(aset) for j,aset in aln.a.iteritems() ]
     T  = [ t[A[0]+1] ]
     for j in range(len(en)-1):
-        T.append( max( T[j] + sayit('en-US',[en[j]]), t[A[j+1]+1] ) )
-    T.append( T[-1] + sayit('en-US', en[-1]) )
+        T.append( max( T[j] + sayit(tgtLang,[en[j]]), t[A[j+1]+1] ) )
+    T.append( T[-1] + sayit(tgtLang, en[-1]) )
     return sum(T) - sum(t), T[-1]
 
 def score(a0, a1=None):
